@@ -16,18 +16,22 @@ A robust Bash script to automate package installations on Arch Linux. Customize 
    ```bash
    git clone https://github.com/WizardBitter/arch-package-installer.git
    ```
-2. Make the script executable:
+2. Navigate to the script directory:
+   ```bash
+   cd arch-package-installer
+   ```
+3. Make the script executable:
    ```bash
    chmod +x installpacks.sh
    ```
-3. Customize package lists (optional):
+4. Customize package lists (optional):
    - Open `installpacks.sh` in a text editor.
-   - Edit package arrays at lines **258–264** (core packages) and **269–274** (flatpaks) to include or exclude desired packages.
-1. Run the script:
+   - Edit package arrays at lines **258–264** (core packages) and **269–274** (Flatpak packages) to include or exclude desired packages.
+5. Run the script:
    ```bash
    ./installpacks.sh
    ```
-5. Follow the interactive prompts to select installation options.
+6. Follow the interactive prompts to select installation options.
 
 ### Supported Installations
 
@@ -46,6 +50,6 @@ Installation details are logged to:
 
 ## Notes
 
-- Ensure `yay` is installed for AUR package support.
+- Ensure `yay` is installed for AUR package support (`yay` setup instructions: [yay GitHub](https://github.com/Jguer/yay)).
 - An active internet connection is required.
 - Review the script before running to confirm package selections align with your needs.

@@ -76,6 +76,62 @@ setup_temp_dir() {
     trap 'rm -rf "$TEMP_DIR"' EXIT
 }
 
+# Function to prompt user for AUR helper choice
+select_aur_helper() {
+    echo "Which AUR helper would you like to install?"
+    echo "1) paru"
+    echo "2) yay"
+    read -p "Enter your choice (1 or 2): " choice
+
+    case $choice in
+        1)
+            install_paru
+            ;;
+        2)
+            install_yay
+            ;;
+        *)
+            error_exit "Invalid choice. Please select 1 for paru or 2 for yay."
+            ;;
+    esac
+}
+
+# Function to install paru
+install_paru() {
+    if command_exists paru; then
+        log "paru is already installed"
+        return 0
+    fi
+
+    log "Installing paru (AUR helper)..."
+
+    # Install required dependencies
+    log "Installing dependencies..."
+    if ! sudo pacman -S --needed --noconfirm base-devel git; then
+        error_exit "Failed to install dependencies for paru"
+    fi
+
+    # Clone and install paru
+    log "Cloning paru repository..."
+    if ! git clone https://aur.archlinux.org/paru.git "$TEMP_DIR/paru"; then
+        error_exit "Failed to clone paru repository"
+    fi
+
+    cd "$TEMP_DIR/paru" || error_exit "Failed to change to paru directory"
+
+    log "Building and installing paru..."
+    if ! makepkg -si --noconfirm; then
+        error_exit "Failed to build and install paru"
+    fi
+
+    # Verify installation
+    if ! command_exists paru; then
+        error_exit "paru installation failed verification"
+    fi
+
+    log "paru has been installed successfully!"
+}
+
 # Function to install yay
 install_yay() {
     if command_exists yay; then
@@ -266,12 +322,11 @@ PACMAN_PACKAGES=(
 
 # Flatpak packages to install
 FLATPAK_PACKAGES=(
-    "com.spotify.Client" "com.stremio.Stremio" "com.usebottles.bottles"
+    "com.spotify.Client" "com.usebottles.bottles"
     "dev.bragefuglseth.Keypunch" "dev.vencord.Vesktop"
     "io.github.flattool.Warehouse" "io.github.giantpinkrobots.flatsweep"
     "io.gitlab.theevilskeleton.Upscaler" "io.missioncenter.MissionCenter"
     "md.obsidian.Obsidian" "org.localsend.localsend_app"
-    "org.qbittorrent.qBittorrent"
 )
 
 # Gaming packages to install
@@ -286,6 +341,17 @@ FLATPAK_GAMING_PACKAGES=(
     "net.pcsx2.PCSX2" "com.vysp3r.ProtonPlus" "io.github.ryubing.Ryujinx" "net.rpcs3.RPCS3" "io.mgba.mGBA" "net.shadps4.shadPS4"
 )
 
+# Function to detect available AUR helper
+get_aur_helper() {
+    if command_exists paru; then
+        echo "paru"
+    elif command_exists yay; then
+        echo "yay"
+    else
+        error_exit "No AUR helper (paru or yay) is installed. Please install one first."
+    fi
+}
+
 # Function to install Pacman/AUR packages
 install_pacman_packages() {
     progress "Updating package database..."
@@ -298,7 +364,7 @@ install_pacman_packages() {
         log "Installing $package..."
         if ! sudo pacman -S --noconfirm "$package"; then
             log "Trying to install $package from AUR..."
-            if ! yay -S --noconfirm "$package"; then
+            if ! "$AUR_HELPER" -S --noconfirm "$package"; then
                 error_log "Failed to install $package"
             fi
         fi
@@ -340,7 +406,7 @@ select_gaming_packages() {
             log "Installing $package..."
             if ! sudo pacman -S --noconfirm "$package"; then
                 log "Trying to install $package from AUR..."
-                if ! yay -S --noconfirm "$package"; then
+                if ! "$AUR_HELPER" -S --noconfirm "$package"; then
                     error_log "Failed to install $package"
                 fi
             fi
@@ -393,13 +459,16 @@ check_system_requirements
 section_header "Setting up Mirrors"
 setup_mirrors
 
-# Install yay first
-section_header "Installing AUR Helper (yay)"
-install_yay
+# Install AUR helper
+section_header "Installing AUR Helper"
+select_aur_helper
 
 # Install Chaotic-AUR repository
 section_header "Installing Chaotic-AUR Repository"
 setup_chaotic_aur
+
+# Detect AUR helper
+AUR_HELPER=$(get_aur_helper)
 
 # Then install other packages
 section_header "Installing System Packages"

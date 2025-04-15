@@ -78,10 +78,11 @@ setup_temp_dir() {
 
 # Function to prompt user for AUR helper choice
 select_aur_helper() {
-    echo "Which AUR helper would you like to install?"
-    echo "1) paru"
-    echo "2) yay"
-    read -p "Enter your choice (1 or 2): " choice
+    echo -e "\n\033[1;36mWhich AUR helper would you like to install?\033[0m"
+    echo -e "\033[1;33m1) paru\033[0m"
+    echo -e "\033[1;33m2) yay\033[0m"
+    echo -e "\033[1;32m--------------------------------\033[0m"
+    read -p "$'\033[1;34mEnter your choice (1 or 2): \033[0m'" choice
 
     case $choice in
         1)

@@ -4,7 +4,7 @@ A robust Bash script to automate package installations on Arch Linux. Customize 
 
 ## Features
 
-- Installs packages from official Arch Linux repositories, AUR (via `yay`), and Flatpak
+- Installs packages from official Arch Linux repositories, AUR (via `paru` or `yay`), and Flatpak
 - Optional installation of gaming-related packages
 - Colorful terminal output with detailed logging
 - Verifies system requirements before execution
@@ -26,7 +26,7 @@ A robust Bash script to automate package installations on Arch Linux. Customize 
    ```
 4. Customize package lists (optional):
    - Open `installpacks.sh` in a text editor.
-   - Edit package arrays at lines **258–264** (core packages) and **269–274** (Flatpak packages) to include or exclude desired packages.
+   - Edit package arrays at lines **314–320** (core packages) and **325-330** (Flatpak packages) to include or exclude desired packages.
 5. Run the script:
    ```bash
    ./installpacks.sh
@@ -50,6 +50,6 @@ Installation details are logged to:
 
 ## Notes
 
-- Ensure `yay` is installed for AUR package support (`yay` setup instructions: [yay GitHub](https://github.com/Jguer/yay)).
+- Ensure `yay` or `paru` is installed for AUR package support
 - An active internet connection is required.
 - Review the script before running to confirm package selections align with your needs.

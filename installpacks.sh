@@ -449,7 +449,6 @@ touch "$LOG_FILE" "$ERROR_LOG"
 chmod 644 "$LOG_FILE" "$ERROR_LOG"
 
 # Setup temporary directory
-section_header "Setting up Temporary Directory"
 setup_temp_dir
 
 # Check system requirements
@@ -457,7 +456,6 @@ section_header "Checking System Requirements"
 check_system_requirements
 
 # Set up mirrors
-section_header "Setting up Mirrors"
 setup_mirrors
 
 # Install AUR helper
@@ -482,6 +480,18 @@ install_flatpaks
 # Ask for gaming package installation
 section_header "Gaming Package Selection"
 select_gaming_packages
+
+# Remove GNOME packages
+section_header "Removing GNOME Packages"
+remove_gnome_packages
+
+# Install GNOME extensions
+section_header "Installing GNOME Extensions"
+install_gnome_extensions
+
+# Install themes
+section_header "Installing Themes"
+install_themes
 
 # Show summary
 section_header "Installation Summary"

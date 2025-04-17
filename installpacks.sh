@@ -363,7 +363,7 @@ install_pacman_packages() {
     progress "Installing Pacman/AUR packages..."
     for package in "${PACMAN_PACKAGES[@]}"; do
         log "Installing $package..."
-        if ! sudo pacman -S --noconfirm "$package"; then
+        if ! sudo pacman -S --needed --noconfirm "$package"; then
             log "Trying to install $package from AUR..."
             if ! "$AUR_HELPER" -S --noconfirm "$package"; then
                 error_log "Failed to install $package"
@@ -405,7 +405,7 @@ select_gaming_packages() {
         progress "Installing system gaming packages..."
         for package in "${GAMING_PACKAGES[@]}"; do
             log "Installing $package..."
-            if ! sudo pacman -S --noconfirm "$package"; then
+            if ! sudo pacman -S --needed --noconfirm "$package"; then
                 log "Trying to install $package from AUR..."
                 if ! "$AUR_HELPER" -S --noconfirm "$package"; then
                     error_log "Failed to install $package"
